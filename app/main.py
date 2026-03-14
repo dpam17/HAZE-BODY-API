@@ -7,7 +7,8 @@
 # Think of it like a receptionist — it receives requests, 
 # directs them to the right place, and sends back the response
 
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form
+from typing import List, Optional
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from app.utils import process_multiple_images, load_and_prepare_image
@@ -58,7 +59,7 @@ async def measure_body(
     # This is an optional parameter the user can provide
     # If they know their real height, measurements will be more accurate
     # If not provided, we default to 170cm as discussed
-    real_height_cm: float = 170.0
+    real_height_cm: Optional[float] = Form(170.0)
 ):
     # --- Validation: Check number of images ---
     # We only accept between 1 and 4 images
