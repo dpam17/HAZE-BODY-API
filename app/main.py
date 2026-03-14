@@ -566,7 +566,7 @@ async def measure_body(
     # --- Multiple Images Path ---
     # If 2-4 images are uploaded, average results across all of them
     else:
-        result = process_multiple_images(images, real_height_cm)
+        result = await process_multiple_images(images, real_height_cm)
 
         if "error" in result:
             raise HTTPException(status_code=422, detail=result["error"])
