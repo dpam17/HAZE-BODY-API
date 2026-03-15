@@ -1,12 +1,3 @@
-# main.py
-# This is the entry point of our API — the front door of the whole system.
-# It does three things:
-# 1. Creates the FastAPI application
-# 2. Defines the API endpoints (the URLs people can send requests to)
-# 3. Receives uploaded files and passes them to utils.py and engine.py for processing
-# Think of it like a receptionist — it receives requests,
-# directs them to the right place, and sends back the response
-
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -14,20 +5,14 @@ from typing import List, Optional
 from app.utils import process_multiple_images, load_and_prepare_image
 from app.engine import estimate_measurements
 
-# --- Create the FastAPI app ---
-# This one line creates our entire API application
-# Everything else we write attaches to this object
+# Create the FastAPI app
 app = FastAPI(
     title="Haze Couture Body Measurement API",
     description="Upload 1-4 photos to get estimated body measurements",
     version="1.0.0"
 )
 
-# --- CORS Middleware ---
-# CORS = Cross Origin Resource Sharing
-# This allows the API to be accessed from browsers and external tools
-# Without this, browsers would block requests to our API for security reasons
-# allow_origins=["*"] means: accept requests from anywhere
+# CORS Middleware to allow external access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -35,11 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# --- Root Endpoint ---
-# Returns a beautiful branded HTML page anyone can use to test the API
-# No terminal, no curl, no installation needed
-# URL: GET /
+# Root Endpoint: Returns a branded HTML interface
 @app.get("/", response_class=HTMLResponse)
 def root():
     return """
@@ -395,7 +376,6 @@ def root():
             const filesSelected = document.getElementById('filesSelected');
             const uploadZone = document.getElementById('uploadZone');
 
-            // Update file count display when files are selected
             fileInput.addEventListener('change', () => {
                 const count = fileInput.files.length;
                 filesSelected.textContent = count === 0 ? ''
@@ -403,7 +383,6 @@ def root():
                     : '0' + count + ' images selected';
             });
 
-            // Drag and drop support
             uploadZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 uploadZone.classList.add('dragover');
@@ -435,12 +414,10 @@ def root():
                     return;
                 }
 
-                // Disable button and show processing state
                 btn.disabled = true;
                 btn.innerHTML = '<span class="processing-dots"><span>.</span><span>.</span><span>.</span></span>';
                 resultsWrap.classList.remove('visible');
 
-                // Build form data to send to /measure
                 const formData = new FormData();
                 for (let i = 0; i < files.length; i++) {
                     formData.append('images', files[i]);
@@ -511,31 +488,20 @@ def root():
     </html>
     """
 
-
-# --- Main Measurement Endpoint ---
-# This is the core of the API — where the actual work happens
-# URL: POST /measure
-# It accepts 1 to 4 uploaded image files
-# It returns the estimated body measurements as JSON
+# Main Measurement Endpoint: Processes image uploads and returns measurements
 @app.post("/measure")
 async def measure_body(
-    # File(...) means: this field is required — the API will reject requests without it
-    # List[UploadFile] means: accept a list of uploaded files (1 to 4 images)
     images: List[UploadFile] = File(...),
-
-    # Optional real height input — if provided, measurements will be more accurate
     real_height_cm: Optional[float] = Form(170.0)
 ):
-    # --- Validation: Check number of images ---
-    # We only accept between 1 and 4 images
+    # Validation: Check number of images
     if len(images) < 1 or len(images) > 4:
         raise HTTPException(
             status_code=400,
             detail="Please upload between 1 and 4 images"
         )
 
-    # --- Validation: Check file types ---
-    # We only accept image files — not PDFs, videos, or anything else
+    # Validation: Check file types
     allowed_types = ["image/jpeg", "image/png", "image/jpg", "image/webp"]
     for image in images:
         if image.content_type not in allowed_types:
@@ -544,8 +510,7 @@ async def measure_body(
                 detail=f"{image.filename} is not a supported image type. Use JPEG, PNG, or WEBP."
             )
 
-    # --- Single Image Path ---
-    # If only one image is uploaded, process it directly
+    # Single Image Path
     if len(images) == 1:
         file_bytes = await images[0].read()
         image_rgb, image_width, image_height = load_and_prepare_image(file_bytes)
@@ -563,8 +528,7 @@ async def measure_body(
 
         return result
 
-    # --- Multiple Images Path ---
-    # If 2-4 images are uploaded, average results across all of them
+    # Multiple Images Path
     else:
         result = await process_multiple_images(images, real_height_cm)
 
