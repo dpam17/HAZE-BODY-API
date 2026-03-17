@@ -1,7 +1,7 @@
 # Haze Couture Body Measurement API
 
 A REST API that estimates key body measurements from 1–4 uploaded photos.
-Built with FastAPI and MediaPipe for Haze Couture's SIWES Intern Challenge.
+Built with FastAPI and MediaPipe.
 
 ---
 
@@ -220,4 +220,4 @@ tests/test_api.py::test_measure_with_real_image  PASSED
 
 ---
 
-Built by PAM DAVID WENG — Haze Couture Intern Challenge Submission
+Built by Pam David Weng

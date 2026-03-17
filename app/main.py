@@ -7,7 +7,7 @@ from app.engine import estimate_measurements
 
 # Create the FastAPI app
 app = FastAPI(
-    title="Haze Couture Body Measurement API",
+    title="BodyMetrics API",
     description="Upload 1-4 photos to get estimated body measurements",
     version="1.0.0"
 )
@@ -29,7 +29,7 @@ def root():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Haze Couture — Body Measurement API</title>
+        <title>BodyMetrics API</title>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
         <style>
             * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -333,8 +333,8 @@ def root():
         <div class="haze-card">
 
             <div class="haze-header">
-                <div class="haze-wordmark">Haze</div>
-                <div class="haze-sub">Body Measurement API</div>
+                <div class="haze-wordmark">BodyMetrics</div>
+                <div class="haze-sub">Measurement Extraction API</div>
                 <div class="haze-divider"></div>
             </div>
 
@@ -366,7 +366,7 @@ def root():
             </div>
 
             <div class="haze-footer">
-                <div class="footer-text">Couture x AI — 2026</div>
+                <div class="footer-text">BodyMetrics x AI — 2026</div>
             </div>
 
         </div>
