@@ -1,5 +1,3 @@
-# Haze Couture Body Measurement API
-
 A REST API that estimates key body measurements from 1–4 uploaded photos.
 Built with FastAPI and MediaPipe.
 
